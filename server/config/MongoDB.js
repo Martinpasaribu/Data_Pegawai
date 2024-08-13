@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config();
 
-mongoose.connect('mongodb+srv://martin12082000:Martin1208__+@ujicobadb.sjemocx.mongodb.net/?retryWrites=true&w=majority&appName=ujicobadb',{
+mongoose.connect(process.env.MongoDB,{
     user:'martin12082000',
     pass:'Martin1208__+',
 })
