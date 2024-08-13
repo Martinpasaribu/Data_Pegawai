@@ -58,7 +58,7 @@
              
                     <div :class="{ 'hidden':!cari , 'block w-[15rem] max-h-[10rem] bg-birut p-2 overflow-auto' : cari}" class="absolute">
                       <div class="flex item fruit" v-for="fruit in filteredList()" :key="fruit">
-                        <p class="text-white">{{ fruit.nama }}</p>
+                        <p  @click="handleClick(fruit)" class="text-white cursor-pointer hover:bg-kuning2 hover:text-black w-full">{{ fruit.nama }}</p>
                       </div>
                       <div class="item error" v-if="cari&&!filteredList().length">
                         <p>Data tidak ditemukan!</p>
@@ -258,6 +258,38 @@
     </figure>
 
 
+    
+          <!-- Detail Produk -->
+          <figure v-show="showDetail"  class="flex justify-center items-center  z-9 fixed top-[5rem] left-[1rem] w-full  h-[40rem]  animate-status z-20" >
+            <div  v-if="filteredPick" class="flex relative w-[50rem] h-[34rem] bg-biru rounded-xl">
+                  <button @click="closePopup" class="  w-[2.2rem] h-[2rem] font-bold text-xl absolute rounded-full bg-white right-[1rem] md:right-10 top-[2rem] md:top-[2rem] hover:text-red">X</button>
+                  <article v-show="!pesan"  v-for="item in filteredPick" :key="item.uuid"  class="flex flex-col justify-center items-center bg- h-[32rem] w-full m-4 ">
+                      <div class=" flex justify-center items-center  h-full w-full">
+                          <div class=" w-[40rem] h-[24rem]">
+                            <img
+                              :src=" item.foto "
+                              alt="foto"
+                              class=" w-full h-full  object-contain"
+                            />
+                          </div>
+                          <div class="flex justify-around items-center bottom-[11rem] w-full h-[2rem] absolute text-warna1  font-KodeMono font-extrabold text-[1.1rem]">
+                            <span class="bg-black px-3 rounded-lg">Jabatan : {{ item.jabatan }}</span>
+                            <span class="bg-black px-3 rounded-lg">Asal : {{ item.alamat }}</span>
+                          </div>
+                      </div>
+                      <div class="flex flex-col justify-around items-center h-1/2 w-full p-5 gap-4 text-white">
+                          <div class="w-full h-[2rem] text-2xl text-center font-Calistoga"><h1>{{ item.nama }}</h1></div>
+          
+
+                          
+                      </div>
+            
+                  </article>
+
+
+            </div>
+        </figure>
+
     </div>
 
 
@@ -304,6 +336,9 @@ export default {
       sortDirection: 'asc',
       filterTime: '',
       filterGender: '',
+      picks : '',  
+      picks2 : '',  
+      showDetail: false,
     };
   },
 
@@ -336,7 +371,11 @@ export default {
         if (a[this.sortColumn] > b[this.sortColumn]) return 1 * modifier;
         return 0;
       });
-    }
+    },
+    filteredPick() {
+      return this.pegawaiData.filter(item => item.uuid === this.picks);
+     
+    },
 
   }
 ,
@@ -371,6 +410,7 @@ methods : {
       this.PopAjukan = false ;
       this.SlideBerhasil = false ;
     },
+
 
     filterData() {  // Ingat kalo mau filtering Tipe datanya harus sama !
     
@@ -465,18 +505,23 @@ methods : {
     
     },
 
-  // async DataApi() {
-  //   try {
-  //     const response = await axiosClient2.get('/data');
-  //     this.datas = response.data;
-  //     console.log('datas', this.datas);
+    displayDetail() {
+      this.showDetail = true;
+    },
+    closePopup() {
+      this.showDetail = false;
+      this.pesan = false
+    },
+    pick(value){
+      this.picks = value,
+      console.log('Data Pick : ', value)
+    },
 
-  //     // Setelah data1 diambil, coba ambil data2
-  //     await this.Datafilem();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
+    handleClick(item) {
+      this.displayDetail();
+      this.picks = item.uuid;
+      this.picks2 = item.original_title;
+    },
 
   async DataPegawai() {
     try {
